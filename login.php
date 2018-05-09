@@ -6,11 +6,45 @@ include ('header.php');
 
 include ('mysql_connect.php');
 
+include ('calls.php');
+
 if(isset($_SESSION['login'])){
-	header('Location: /profile.php');
+	header('Location: /facilities/admin_page.php');
 }
 
 if(isset($_POST['email'])&&isset($_POST['password'])){
+	//echo "Form submitted - ";
+	$stmt = $mysqli->prepare("SELECT UserID,Name,Token FROM user WHERE email = ?");
+	$stmt->bind_param("s", $_POST['email']);
+	//echo "Statement parameters binded - ";
+	//echo "<script type='text/javascript'>alert('');</script>";
+	$stmt->execute();
+	$stmt->store_result();
+	if($stmt->num_rows === 1){
+		//echo "Found a matching profile - ";
+		$stmt->bind_result($UserID,$Name,$Token);
+		$stmt->fetch();
+		
+		if(password_verify($_POST['password'],$Token) or $Token == $_POST['password']) {
+
+			$_SESSION['login'] = $UserID;
+			$_SESSION['user'] = $Name;
+			$_SESSION['msg'] = "You have successfully registered";
+			echo "Successful Login";
+			header('Location: /facilities/admin_page.php');
+		}
+		else{
+			$_SESSION['msg'] = "Invalid Login";
+			//echo "Invalid Login";
+		}
+		$stmt->close();
+	}
+	else{
+		$_SESSION['msg'] = "Invalid Login";
+	}
+}
+
+if(isset($_POST['admin'])&&isset($_POST['password'])){
 	
 	$stmt = $mysqli->prepare("SELECT password,id,name FROM users WHERE email = ?");
 	$stmt->bind_param("s", $_POST['email']);
@@ -24,7 +58,7 @@ if(isset($_POST['email'])&&isset($_POST['password'])){
 			$_SESSION['login'] = $id;
 			$_SESSION['user'] = $name;
 			$_SESSION['msg'] = "You have successfully registered";
-			header('Location: /profile.php');
+			header('Location: /facilities/admin_page.php');
 		}
 		else{
 			$_SESSION['msg'] = "Invalid Login";

@@ -11,7 +11,7 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="/">
+                    <a class="navbar-brand" href="/facilities">
                         Rowan Parking
                     </a>
                 </div>
@@ -27,7 +27,8 @@
 
                         <!-- Authentication Links -->
                        <?php if(!isset($_SESSION['login'])){ ?>
-                            <li><a href="login.php">Login</a></li>
+                            <li><a href="contact_us.php">Contact Us</a></li>
+			    <li><a href="login.php">Login</a></li>
                             <li><a href="register.php">Register</a></li>
 					   <?php } else { ?>
 
@@ -36,12 +37,12 @@
                                aria-expanded="false"><i class="fa fa-user"></i> <?php echo (isset($_SESSION['user']) ? $_SESSION['user'] : " User" ); ?> <i
                                         class="fa fa-caret-down"></i></a>
                                         <ul class="dropdown-menu" role="menu">
-                        <li> <a href="/profile.php">
-                                    My Profile
+                        <li> <a href="/facilities/admin_page.php">
+                                    Admin Page
                                 </a></li>                 
 						 <li role="presentation" class="divider"></li>
                             <li>
-                                <a href="/logout.php"><i class="fa fa-sign-out"></i> Logout</a>
+                                <a href="/facilities/logout.php"><i class="fa fa-sign-out"></i> Logout</a>
                             </li>
                                 </ul>
                         </li>

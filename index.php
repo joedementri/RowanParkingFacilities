@@ -6,15 +6,13 @@ include ('header.php');
 
 ?>
             <div class="content">
-                <div class="title m-b-md">
-                    Rowan Parking<br>Facilities Management
-					<img src="https://i.pinimg.com/originals/a3/94/72/a39472d4c71fbb847462ae984f9c61b2.jpg">
+                <div class="title m-b-md" style="font-size:6vw;">
+                    <center>Rowan Parking<br>Facilities Management</center>
+					<img src="http://thewhitonline.com/wp-content/uploads/2016/09/IMG_5518.jpg" width="90%" height="500vw">
                 </div>
 				
-                <div class="links">
-                    <a href="">Project Spec</a>
-					<a href="">Design Doc</a>  					
-                    <a href="">GitHub</a>
+                <div class="links">  					
+                    <a href="https://github.com/joedementri/RowanParkingFacilities">GitHub</a>
                 </div>
             </div>
       

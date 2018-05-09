@@ -6,54 +6,72 @@ include ('header.php');
 
 include ('mysql_connect.php');
 
-if(isset($_SESSION['login'])){
-	header('location: /profile.php');
-}
+//error_reporting(E_ALL);
+
+//ini_set('display_errors', TRUE);
+
+include('calls.php');
+
 
 if(isset($_POST['name'])&&isset($_POST['email'])&&isset($_POST['password'])&&isset($_POST['password_confirmation'])){
-  
-  if($_POST['password']==$_POST['password_confirmation']){
-	  $user= "test";
-	  
-      $stmt = $mysqli->prepare( "INSERT INTO users(`name`,`email`,`password`,`remember_token`,`updated_at`,`user_filepath`,`num_photos`)".
-      "VALUES (?,?,?,NULL,NULL,NULL,0)");
 
-      $options = [
+  if($_POST['password']==$_POST['password_confirmation']){
+	$user= "test";
+	
+      	$stmt = $mysqli->prepare("INSERT INTO user(PermitID, UserTypeID, Name, Email, Username, Token, isDisabled, Status) VALUES (3,3,?,?,?,?,0,1)");
+
+      	$options = [
           'cost' => 11,
           'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
-      ];
-      $password = password_hash($_POST['password'], PASSWORD_BCRYPT, $options);
+      	];
+      	$password = password_hash($_POST['password'], PASSWORD_BCRYPT, $options);
+	$username = $_POST['email'];
 
-      $stmt->bind_param('sss',$_POST['name'], $_POST['email'], $password);
-
+	if (strpos($username,"@rowan.edu") !== false) {
+		//echo "<script type='text/javascript'>alert('HERE');</script>";
+		$stmt->bind_param('ssss',$_POST['name'], $_POST['email'], $username, $password);
 	  
-      if($stmt->execute()){
+	$name = $_POST['name'];
+	$email = $_POST['email'];
+	
+	//NEW CODE WITH API CALL
+	$post = [
+	"permit" => "3",
+	"type" => "3",
+	"name" => $name,
+	"email" => $email,
+	"username" => $username,
+	"password" => $password,
+	"isDisabled" => "0",
+	"status" => "1"
+	];
+	
+	
+	//$post2 = json_encode($post);
+	//echo "<script> type='text/javascript'> alert ('var_dump($post2)'); </script>";
+	//$result = httpSend("POST", "http://ec2-34-229-81-168.compute-1.amazonaws.com/deva/api.php?table=userWithpermit", $post2);	
+
+	if ($stmt->execute()) {
 		$stmt->store_result();
 		$stmt->close();
 		
-		$id = mysqli_insert_id($mysqli);
-		
-		$dir = 'users/'.$id;
-		
-		if (!is_dir($dir)) {
-			mkdir($dir, 0777);
-		}
-
-		$_SESSION['login']=$id;
+		$_SESSION['login']=$_POST['email'];
 		$_SESSION['user']=$_POST['name'];
 		$_SESSION['registered']=1;
-		
-		header('Location: /profile.php');
-		
-	  
-	  } else {
+	} else {
 		$_SESSION['msg'] = "Email already exists";
-	  }
+	}	
+	echo "<script type='text/javascript'> window.location='admin_page.php'; </script>";
+	} else {
+		$_SESSION['msg'] = "Invalid Email. Email must be from a Rowan Facility Member";
+	}
+
+      	
 
   }else {
     $_SESSION['msg'] = "Passwords entered do not match";
   }
-
+  
 }
 
 
